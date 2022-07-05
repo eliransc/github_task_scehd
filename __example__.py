@@ -6,7 +6,7 @@ import argparse
 import numpy as np
 import sys
 
-curr_num = 7
+# curr_num = 7
 
 # a1 = 1.5
 # a2 = 0.25
@@ -29,7 +29,10 @@ class MyPlanner:
 
     def get_task_out_prob(self, df_trans, task_):
         curr_ind = df_trans.loc[df_trans['task'] == task_, :].index[0]
-        return df_trans.iloc[curr_ind, -1] / df_trans.iloc[curr_ind, 1:].sum()
+        if df_trans.iloc[curr_ind, 1:].sum()>0:
+            return df_trans.iloc[curr_ind, -1] / df_trans.iloc[curr_ind, 1:].sum()
+        else:
+            return 0
 
     def give_task_ranking(self, df_mean_var, avail_res, task):
 
@@ -81,7 +84,7 @@ class MyPlanner:
         ##### End: Ranking tasks within resource ########
         #################################################
 
-    def plan(self, available_resources, unassigned_tasks, resource_pool, a1,a2,a3,a4,a5):
+    def plan(self, available_resources, unassigned_tasks, resource_pool, a1,a2,a3,a4,a5, curr_num):
 
         path_freq_transition = './data/freq_transition_path_' + str(curr_num) + '.pkl'
         mean_path = './data/pd_mean_var_path_' + str(curr_num) + '.pkl'
@@ -271,8 +274,8 @@ class MyPlanner:
         return assignments
 
 
-    def report(self, event):
-        pass
+    def report(self, event, curr_num):
+
         path = './data/pd_path_' +str(curr_num)+'.pkl'
 
         path_freq_transition =  './data/freq_transition_path_' +str(curr_num)+'.pkl'
@@ -386,16 +389,16 @@ class MyPlanner:
             pkl.dump(df_mean_var, open(mean_path, 'wb'))
 
 
-
 def func1(x1,x2):
     return -((x1-3)**2+(x2-2)**2)+3
 
-def get_curr_val(a1,a2,a3,a4,a5):
+def get_curr_val(a1,a2,a3,a4,a5, curr_num):
+
 
 
     my_planner = MyPlanner()
     simulator = Simulator(my_planner)
-    result = simulator.run(a1,a2,a3,a4,a5)
+    result = simulator.run(a1,a2,a3,a4,a5, curr_num)
     return result[0]
 
 
@@ -420,7 +423,10 @@ def main(args):
         a5 = np.random.uniform(0, 10)
         print(a1, a2, a3, a4, a5)
 
-        curr_result = get_curr_val(a1,a2,a3,a4,a5)
+        curr_num = np.random.randint(1, 10000000)
+        print('curr_num: ', curr_num)
+
+        curr_result = get_curr_val(a1, a2, a3, a4, a5, curr_num)
 
         curr_ind = df.shape[0]
         df.loc[curr_ind, 'a1'] = a1
@@ -429,6 +435,7 @@ def main(args):
         df.loc[curr_ind, 'a4'] = a4
         df.loc[curr_ind, 'a5'] = a5
         df.loc[curr_ind, 'result'] = curr_result
+        df.loc[curr_ind, 'curr_num'] = curr_num
         df.loc[curr_ind, 'data_example'] = 1
 
         pkl.dump(df, open(args.file_path, 'wb'))
@@ -438,9 +445,6 @@ def main(args):
 
 
 
-
-
-# get_curr_val(1,1,1,1,1)
 
 def parse_arguments(argv):
     parser = argparse.ArgumentParser()

@@ -5,7 +5,7 @@ import pickle5 as pickle
 from abc import ABC, abstractmethod
 
 
-RUNNING_TIME = 24*365
+RUNNING_TIME = 24*0.365
 
 
 class Event:
@@ -318,7 +318,7 @@ class Simulator:
     def working_nr_resources(self):
         return len(self.available_resources) + len(self.busy_resources) + len(self.reserved_resources)
 
-    def run(self, a1,a2,a3,a4,a5):
+    def run(self, a1,a2,a3,a4,a5, curr_num):
         # repeat until the end of the simulation time:
         while self.now <= RUNNING_TIME:
             # get the first event e from the events
@@ -330,9 +330,9 @@ class Simulator:
             # if e is an arrival event:
             if event.event_type == EventType.CASE_ARRIVAL:
                 self.case_start_times[event.task.case_id] = self.now
-                self.planner.report(Event(event.task.case_id, None, self.now, None, EventType.CASE_ARRIVAL))
+                self.planner.report(Event(event.task.case_id, None, self.now, None, EventType.CASE_ARRIVAL), curr_num)
                 # add new task
-                self.planner.report(Event(event.task.case_id, event.task, self.now, None, EventType.TASK_ACTIVATE))
+                self.planner.report(Event(event.task.case_id, event.task, self.now, None, EventType.TASK_ACTIVATE), curr_num)
                 self.unassigned_tasks[event.task.id] = event.task
                 self.busy_cases[event.task.case_id] = [event.task.id]
                 # generate a new planning event to start planning now for the new task
@@ -344,7 +344,7 @@ class Simulator:
 
             # if e is a start event:
             elif event.event_type == EventType.START_TASK:
-                self.planner.report(Event(event.task.case_id, event.task, self.now, event.resource, EventType.START_TASK))
+                self.planner.report(Event(event.task.case_id, event.task, self.now, event.resource, EventType.START_TASK), curr_num)
                 # create a complete event for task
                 t = self.now + self.problem.processing_time(event.task, event.resource)
                 self.events.append((t, SimulationEvent(EventType.COMPLETE_TASK, t, event.task, event.resource)))
@@ -355,7 +355,7 @@ class Simulator:
 
             # if e is a complete event:
             elif event.event_type == EventType.COMPLETE_TASK:
-                self.planner.report(Event(event.task.case_id, event.task, self.now, event.resource, EventType.COMPLETE_TASK))
+                self.planner.report(Event(event.task.case_id, event.task, self.now, event.resource, EventType.COMPLETE_TASK), curr_num)
                 # set resource to available, if it is still desired, otherwise set it to away
                 del self.busy_resources[event.resource]
                 if self.working_nr_resources() <= self.desired_nr_resources():
@@ -368,11 +368,11 @@ class Simulator:
                 self.busy_cases[event.task.case_id].remove(event.task.id)
                 # generate unassigned tasks for each next task
                 for next_task in self.problem.next_tasks(event.task):
-                    self.planner.report(Event(event.task.case_id, next_task, self.now, None, EventType.TASK_ACTIVATE))
+                    self.planner.report(Event(event.task.case_id, next_task, self.now, None, EventType.TASK_ACTIVATE), curr_num)
                     self.unassigned_tasks[next_task.id] = next_task
                     self.busy_cases[event.task.case_id].append(next_task.id)
                 if len(self.busy_cases[event.task.case_id]) == 0:
-                    self.planner.report(Event(event.task.case_id, None, self.now, None, EventType.COMPLETE_CASE))
+                    self.planner.report(Event(event.task.case_id, None, self.now, None, EventType.COMPLETE_CASE), curr_num)
                     self.events.append((self.now, SimulationEvent(EventType.COMPLETE_CASE, self.now, event.task)))
                 # generate a new planning event to start planning now for the newly available resource and next tasks
                 self.events.append((self.now, SimulationEvent(EventType.PLAN_TASKS, self.now, None, nr_tasks=len(self.unassigned_tasks), nr_resources=len(self.available_resources))))
@@ -419,7 +419,7 @@ class Simulator:
             elif event.event_type == EventType.PLAN_TASKS:
                 # there only is an assignment if there are free resources and tasks
                 if len(self.unassigned_tasks) > 0 and len(self.available_resources) > 0:
-                    assignments = self.planner.plan(self.available_resources.copy(), list(self.unassigned_tasks.values()), self.problem_resource_pool, a1,a2,a3,a4,a5)
+                    assignments = self.planner.plan(self.available_resources.copy(), list(self.unassigned_tasks.values()), self.problem_resource_pool, a1,a2,a3,a4,a5, curr_num)
                     # for each newly assigned task:
                     moment = self.now
                     for (task, resource) in assignments:
