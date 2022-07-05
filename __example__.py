@@ -409,12 +409,7 @@ def main(args):
 
     for ind in range(args.num_iter):
 
-        if os.path.exists(args.file_path):
-            df = pkl.load(open(args.file_path, 'rb'))
-            print('Already we have {} data points' .format(df.shape[0]))
-        else:
-            df = pd.DataFrame([])
-            print('first time with the df')
+
 
         a1 = np.random.uniform(0,10)
         a2 = np.random.uniform(0, 10)
@@ -427,6 +422,14 @@ def main(args):
         print('curr_num: ', curr_num)
 
         curr_result = get_curr_val(a1, a2, a3, a4, a5, curr_num)
+
+
+        if os.path.exists(args.file_path):
+            df = pkl.load(open(args.file_path, 'rb'))
+            print('Already we have {} data points' .format(df.shape[0]))
+        else:
+            df = pd.DataFrame([])
+            print('first time with the df')
 
         curr_ind = df.shape[0]
         df.loc[curr_ind, 'a1'] = a1
