@@ -449,7 +449,7 @@ def main(args):
 def parse_arguments(argv):
     parser = argparse.ArgumentParser()
     parser.add_argument('--file_path', type=str, help='which settings are used', default='Result_table.pkl')
-    parser.add_argument('--num_iter', type=int, help='how many iterations we run', default=20)
+    parser.add_argument('--num_iter', type=int, help='how many iterations we run', default=50)
     args = parser.parse_args(argv)
 
     return args
