@@ -275,7 +275,7 @@ class MyPlanner:
 
 
     def report(self, event, curr_num):
-
+        print(event.timestamp)
         path = './data/pd_path_' +str(curr_num)+'.pkl'
 
         path_freq_transition =  './data/freq_transition_path_' +str(curr_num)+'.pkl'
@@ -452,7 +452,7 @@ def main(args):
 def parse_arguments(argv):
     parser = argparse.ArgumentParser()
     parser.add_argument('--file_path', type=str, help='which settings are used', default='Result_table_1.pkl')
-    parser.add_argument('--num_iter', type=int, help='how many iterations we run', default=1)
+    parser.add_argument('--num_iter', type=int, help='how many iterations we run', default=5)
     args = parser.parse_args(argv)
 
     return args
