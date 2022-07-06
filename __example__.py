@@ -275,7 +275,7 @@ class MyPlanner:
 
 
     def report(self, event, curr_num):
-        print(event.timestamp)
+
         path = './data/pd_path_' +str(curr_num)+'.pkl'
 
         path_freq_transition =  './data/freq_transition_path_' +str(curr_num)+'.pkl'
@@ -392,12 +392,12 @@ class MyPlanner:
 def func1(x1,x2):
     return -((x1-3)**2+(x2-2)**2)+3
 
-def get_curr_val(a1,a2,a3,a4,a5, curr_num):
+def get_curr_val(a1,a2,a3,a4,a5, curr_num, file_name):
 
 
 
     my_planner = MyPlanner()
-    simulator = Simulator(my_planner)
+    simulator = Simulator(my_planner, file_name)
     result = simulator.run(a1,a2,a3,a4,a5, curr_num)
     return result[0]
 
@@ -409,8 +409,6 @@ def main(args):
 
     for ind in range(args.num_iter):
 
-
-
         a1 = np.random.uniform(0,10)
         a2 = np.random.uniform(0, 10)
         a3 = np.random.uniform(0, 10)
@@ -421,7 +419,8 @@ def main(args):
         curr_num = np.random.randint(1, 10000000)
         print('curr_num: ', curr_num)
 
-        curr_result = get_curr_val(a1, a2, a3, a4, a5, curr_num)
+        # curr_result1 = get_curr_val(a1, a2, a3, a4, a5, curr_num, 'BPI Challenge 2017 - instance.pickle')
+        curr_result2 = get_curr_val(a1, a2, a3, a4, a5, curr_num,'BPI Challenge 2017 - instance 2.pickle')
 
 
         if os.path.exists(args.file_path):
@@ -437,9 +436,9 @@ def main(args):
         df.loc[curr_ind, 'a3'] = a3
         df.loc[curr_ind, 'a4'] = a4
         df.loc[curr_ind, 'a5'] = a5
-        df.loc[curr_ind, 'result'] = curr_result
+        df.loc[curr_ind, 'result'] = curr_result2
         df.loc[curr_ind, 'curr_num'] = curr_num
-        df.loc[curr_ind, 'data_example'] = 1
+        df.loc[curr_ind, 'data_example'] = 2
 
         pkl.dump(df, open(args.file_path, 'wb'))
 
@@ -451,7 +450,7 @@ def main(args):
 
 def parse_arguments(argv):
     parser = argparse.ArgumentParser()
-    parser.add_argument('--file_path', type=str, help='which settings are used', default='Result_table_1.pkl')
+    parser.add_argument('--file_path', type=str, help='which settings are used', default='Result_table_2.pkl')
     parser.add_argument('--num_iter', type=int, help='how many iterations we run', default=5)
     args = parser.parse_args(argv)
 

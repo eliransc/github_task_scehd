@@ -275,6 +275,7 @@ class SimulationEvent:
 
 class Simulator:
     def __init__(self, planner, instance_file="BPI Challenge 2017 - instance.pickle"):
+        print(instance_file)
         self.events = []
 
         self.unassigned_tasks = dict()
