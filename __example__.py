@@ -420,7 +420,7 @@ def main(args):
         print('curr_num: ', curr_num)
 
         # curr_result1 = get_curr_val(a1, a2, a3, a4, a5, curr_num, 'BPI Challenge 2017 - instance.pickle')
-        curr_result2 = get_curr_val(a1, a2, a3, a4, a5, curr_num,'BPI Challenge 2017 - instance 2.pickle')
+        curr_result2 = get_curr_val(a1, a2, a3, a4, a5, curr_num,'BPI Challenge 2017 - instance.pickle')
 
 
         if os.path.exists(args.file_path):
