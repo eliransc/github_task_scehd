@@ -419,8 +419,8 @@ def main(args):
         curr_num = np.random.randint(1, 10000000)
         print('curr_num: ', curr_num)
 
-        # curr_result1 = get_curr_val(a1, a2, a3, a4, a5, curr_num, 'BPI Challenge 2017 - instance.pickle')
-        curr_result2 = get_curr_val(a1, a2, a3, a4, a5, curr_num,'BPI Challenge 2017 - instance.pickle')
+        curr_result1 = get_curr_val(a1, a2, a3, a4, a5, curr_num, 'BPI Challenge 2017 - instance.pickle')
+        curr_result2 = get_curr_val(a1, a2, a3, a4, a5, curr_num,'BPI Challenge 2017 - instance 2.pickle')
 
 
         if os.path.exists(args.file_path):
@@ -436,9 +436,11 @@ def main(args):
         df.loc[curr_ind, 'a3'] = a3
         df.loc[curr_ind, 'a4'] = a4
         df.loc[curr_ind, 'a5'] = a5
-        df.loc[curr_ind, 'result'] = curr_result2
+        df.loc[curr_ind, 'result1'] = curr_result1
+        df.loc[curr_ind, 'result2'] = curr_result2
+        df.loc[curr_ind, 'result_tot'] = curr_result1 + curr_result2
         df.loc[curr_ind, 'curr_num'] = curr_num
-        df.loc[curr_ind, 'data_example'] = 2
+        df.loc[curr_ind, 'data_example'] = 'both'
 
         pkl.dump(df, open(args.file_path, 'wb'))
 
@@ -450,7 +452,7 @@ def main(args):
 
 def parse_arguments(argv):
     parser = argparse.ArgumentParser()
-    parser.add_argument('--file_path', type=str, help='which settings are used', default='Result_table_2.pkl')
+    parser.add_argument('--file_path', type=str, help='which settings are used', default='Result_table_3.pkl')
     parser.add_argument('--num_iter', type=int, help='how many iterations we run', default=5)
     args = parser.parse_args(argv)
 
