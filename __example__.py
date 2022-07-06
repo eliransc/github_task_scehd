@@ -409,11 +409,11 @@ def main(args):
 
     for ind in range(args.num_iter):
 
-        a1 = np.random.uniform(0,10)
-        a2 = np.random.uniform(0, 10)
-        a3 = np.random.uniform(0, 10)
-        a4 = np.random.uniform(0, 10)
-        a5 = np.random.uniform(0, 10)
+        a1 = np.random.uniform(5,15)
+        a2 = np.random.uniform(0, 6)
+        a3 = np.random.uniform(0, 6)
+        a4 = np.random.uniform(0, 6)
+        a5 = np.random.uniform(5, 15)
         print(a1, a2, a3, a4, a5)
 
         curr_num = np.random.randint(1, 10000000)
