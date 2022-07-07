@@ -412,11 +412,18 @@ def main(args):
         a3 = np.random.uniform(0, 10)
         a4 = np.random.uniform(0, 10)
         a5 = np.random.uniform(5, 15)
+
         a1 = 10.879914
         a2 = 0.475911
         a3 = 1.456346
         a4 = 0.928605
         a5 = 8.479268
+
+        a1 = 8.
+        a2 = 2.
+        a3 = 0.25
+        a4 = 0.75
+        a5 = 7.5
         print(a1, a2, a3, a4, a5)
 
         curr_num = np.random.randint(1, 10000000)
