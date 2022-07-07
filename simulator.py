@@ -319,7 +319,7 @@ class Simulator:
     def working_nr_resources(self):
         return len(self.available_resources) + len(self.busy_resources) + len(self.reserved_resources)
 
-    def run(self, a1,a2,a3,a4,a5, curr_num):
+    def run(self, a1, a2, a3, a4, a5, curr_num):
         # repeat until the end of the simulation time:
         while self.now <= RUNNING_TIME:
             # get the first event e from the events

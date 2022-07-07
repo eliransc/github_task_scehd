@@ -394,8 +394,6 @@ def func1(x1,x2):
 
 def get_curr_val(a1,a2,a3,a4,a5, curr_num, file_name):
 
-
-
     my_planner = MyPlanner()
     simulator = Simulator(my_planner, file_name)
     result = simulator.run(a1,a2,a3,a4,a5, curr_num)
@@ -414,6 +412,11 @@ def main(args):
         a3 = np.random.uniform(0, 10)
         a4 = np.random.uniform(0, 10)
         a5 = np.random.uniform(5, 15)
+        a1 = 10.879914
+        a2 = 0.475911
+        a3 = 1.456346
+        a4 = 0.928605
+        a5 = 8.479268
         print(a1, a2, a3, a4, a5)
 
         curr_num = np.random.randint(1, 10000000)
@@ -452,7 +455,7 @@ def main(args):
 
 def parse_arguments(argv):
     parser = argparse.ArgumentParser()
-    parser.add_argument('--file_path', type=str, help='which settings are used', default='Result_table_3.pkl')
+    parser.add_argument('--file_path', type=str, help='which settings are used', default='Result_table_4.pkl')
     parser.add_argument('--num_iter', type=int, help='how many iterations we run', default=5)
     args = parser.parse_args(argv)
 
