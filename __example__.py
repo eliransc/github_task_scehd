@@ -420,10 +420,10 @@ def main(args):
         a5 = 8.479268
 
         a1 = 2.
-        a2 = 1.
+        a2 = 0.
         a3 = 0
         a4 = 0
-        a5 = 0
+        a5 = 2.
         print(a1, a2, a3, a4, a5)
 
         curr_num = np.random.randint(1, 10000000)
