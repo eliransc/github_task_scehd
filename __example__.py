@@ -419,11 +419,11 @@ def main(args):
         a4 = 0.928605
         a5 = 8.479268
 
-        a1 = 2.
-        a2 = 0.
-        a3 = 0
-        a4 = 0
-        a5 = 2.
+        a1 = 10.
+        a2 = 1.
+        a3 = 1.
+        a4 = 1.
+        a5 = 1.
         print(a1, a2, a3, a4, a5)
 
         curr_num = np.random.randint(1, 10000000)
