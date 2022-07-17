@@ -6,16 +6,20 @@ import argparse
 import numpy as np
 import sys
 
-# curr_num = 7
 
-# a1 = 1.5
-# a2 = 0.25
-# a3 = 0.75
-# a4 = 0.5
-# a5 = 3
 
 
 class MyPlanner:
+
+    def __init__(self):
+
+        self.case_num = np.random.randint(1, 10000000)
+        self.a1 = 10.879914
+        self.a2 = 0.475911
+        self.a3 = 1.456346
+        self.a4 = 0.928605
+        self.a5 = 8.479268
+
 
     def check_if_there_is_possible_match(self, available_resources, unassigned_tasks, resource_pool):
 
@@ -74,9 +78,7 @@ class MyPlanner:
                 df_ranking_task = df_ranking_tasks.loc[df_ranking_tasks['task_mean'] > 0, :].sort_values(
                     by='task_mean').reset_index()
                 df_ranking_task['Ranking'] = np.arange(df_ranking_task.shape[0])
-            # if df_ranking_task.loc[df_ranking_task['task_name'] == task.task_type, :].shape[0] > 0:
-            #     task_ranking = df_ranking_task.loc[df_ranking_task['task_name'] == task.task_type, :].index[0]
-            #     print(task_ranking, df_ranking_task.shape[0])
+
 
                 return df_ranking_task
 
@@ -84,11 +86,20 @@ class MyPlanner:
         ##### End: Ranking tasks within resource ########
         #################################################
 
-    def plan(self, available_resources, unassigned_tasks, resource_pool, a1,a2,a3,a4,a5, curr_num):
+    def plan(self, available_resources, unassigned_tasks, resource_pool):
 
-        path_freq_transition = './data/freq_transition_path_' + str(curr_num) + '.pkl'
-        mean_path = './data/pd_mean_var_path_' + str(curr_num) + '.pkl'
-        path = './data/pd_path_' + str(curr_num) + '.pkl'
+        a1 = self.a1
+        a2 = self.a2
+        a3 = self.a3
+        a4 = self.a4
+        a5 = self.a5
+        curr_num = self.case_num
+
+
+
+        path_freq_transition = './freq_transition_path_' + str(curr_num) + '.pkl'
+        mean_path = './pd_mean_var_path_' + str(curr_num) + '.pkl'
+        path = './pd_path_' + str(curr_num) + '.pkl'
 
         if os.path.exists(path):
 
@@ -97,7 +108,7 @@ class MyPlanner:
             curr_df_status = df.index[-1]
         else:
             curr_df_status = 0
-        # print(df.index[-1])
+
 
 
         if not os.path.exists(mean_path):
@@ -122,8 +133,7 @@ class MyPlanner:
 
 
         df_combs_score = pd.DataFrame([])
-        # print(dict_ranking_resource)
-        # print('****************Start assignment*************************')
+
         for task in set(unassigned_tasks_):
             for resource in available_resources:
                 if resource in resource_pool[task]:
@@ -163,7 +173,7 @@ class MyPlanner:
                     else:
                         prob = -1
 
-                    # print(resource, task, mean_val, var_val, res_rank, task_rank, prob)
+
                     curr_ind = df_combs_score.shape[0]
                     df_combs_score.loc[curr_ind, 'resource'] = resource
                     df_combs_score.loc[curr_ind, 'task'] = task
@@ -175,7 +185,7 @@ class MyPlanner:
                     df_combs_score.loc[curr_ind, 'tot_score'] = a1*mean_val*+a2*var_val+a3*res_rank+a4*task_rank-a5*prob
 
 
-        # print('****************End assignment*************************')
+
 
         unassigned_tasks_ = [task.task_type for task in unassigned_tasks]
 
@@ -188,9 +198,9 @@ class MyPlanner:
         for task in set(unassigned_tasks_):
             dict_ranking_resource[task] = self.give_task_ranking(df_mean_var, available_resources, task)
 
-        # print(dict_ranking_resource)
+
         df_sched_score = pd.DataFrame([])
-        # print('****************Start assignment*************************')
+
         for task in set(unassigned_tasks_):
             for resource in available_resources:
                 if resource in resource_pool[task]:
@@ -229,7 +239,7 @@ class MyPlanner:
                     else:
                         prob = -1
 
-                    # print(resource, task, mean_val, var_val, res_rank, task_rank, prob)
+
                     curr_ind = df_sched_score.shape[0]
                     df_sched_score.loc[curr_ind, 'resource'] = resource
                     df_sched_score.loc[curr_ind, 'task'] = task
@@ -243,7 +253,7 @@ class MyPlanner:
         if (df_sched_score.shape[0] > 0 and curr_df_status > 2000):  # if there is at least one task resource combination in  df_sched_score
             df_sched_score = df_sched_score.sort_values(by='tot_score').reset_index()
 
-            # print('****************End assignment*************************')
+
             while self.check_if_there_is_possible_match(available_resources, unassigned_tasks, resource_pool):
                 for ind in range(df_sched_score.shape[0]):
 
@@ -254,7 +264,7 @@ class MyPlanner:
                         if res in available_resources:
                             if res in resource_pool[task]:
                                 assignments.append((unassigned_tasks[inds_tasks[0]], res))
-                                # print(res, unassigned_tasks[inds_tasks[0]])
+
                                 available_resources.remove(res)
                                 unassigned_tasks.pop(inds_tasks[0])
 
@@ -268,17 +278,18 @@ class MyPlanner:
 
                         available_resources.remove(resource)
                         assignments.append((task, resource))
-                        # print(task.task_type, resource)
                         break
 
         return assignments
 
 
-    def report(self, event, curr_num):
+    def report(self, event):
 
-        path = './data/pd_path_' +str(curr_num)+'.pkl'
+        curr_num = self.case_num
 
-        path_freq_transition =  './data/freq_transition_path_' +str(curr_num)+'.pkl'
+        path = './pd_path_' +str(curr_num)+'.pkl'
+
+        path_freq_transition =  './freq_transition_path_' +str(curr_num)+'.pkl'
 
 
         if not os.path.exists(path):
@@ -310,7 +321,6 @@ class MyPlanner:
                 initial_df_vals = np.zeros((num_cols - 2, num_cols))
                 df_freq_transition = pd.DataFrame(initial_df_vals, columns=all_cols)
                 for task_ind, task_ in enumerate(all_cols):
-                    # print(task_, task_ind)
                     if (task_ind > 0) and (task_ind < num_cols - 1):
                         df_freq_transition.loc[task_ind - 1, 'task'] = task_
                 pkl.dump(df_freq_transition, open(path_freq_transition, 'wb'))
@@ -337,7 +347,7 @@ class MyPlanner:
         ## Create service mean and var df per combination of task and resource
 
 
-        mean_path = './data/pd_mean_var_path_' + str(curr_num) + '.pkl'
+        mean_path = './pd_mean_var_path_' + str(curr_num) + '.pkl'
 
         if not os.path.exists(mean_path):
             df_mean_var = pd.DataFrame(columns = ['resource'])
@@ -405,52 +415,62 @@ def get_curr_val(a1,a2,a3,a4,a5, curr_num, file_name):
 def main(args):
 
 
-    for ind in range(args.num_iter):
+    my_planner = MyPlanner()
+    simulator = Simulator(my_planner)
+    result = simulator.run()
+    print(result)
 
-        a1 = np.random.uniform(5,15)
-        a2 = np.random.uniform(0, 10)
-        a3 = np.random.uniform(0, 10)
-        a4 = np.random.uniform(0, 10)
-        a5 = np.random.uniform(5, 15)
+    if False:
+        for ind in range(args.num_iter):
 
-        a1 = 10.879914
-        a2 = 0.475911
-        a3 = 1.456346
-        a4 = 0.928605
-        a5 = 8.479268
+            a1 = np.random.uniform(5,15)
+            a2 = np.random.uniform(0, 10)
+            a3 = np.random.uniform(0, 10)
+            a4 = np.random.uniform(0, 10)
+            a5 = np.random.uniform(5, 15)
+
+            a1 = 10.879914
+            a2 = 0.475911
+            a3 = 1.456346
+            a4 = 0.928605
+            a5 = 8.479268
+
+            a1 = 10.
+            a2 = 1.
+            a3 = 1.
+            a4 = 1.
+            a5 = 1.
+            print(a1, a2, a3, a4, a5)
+
+            curr_num = np.random.randint(1, 10000000)
+            print('curr_num: ', curr_num)
+
+            curr_result1 = get_curr_val(a1, a2, a3, a4, a5, curr_num, 'BPI Challenge 2017 - instance.pickle')
+            curr_result2 = get_curr_val(a1, a2, a3, a4, a5, curr_num,'BPI Challenge 2017 - instance 2.pickle')
 
 
-        print(a1, a2, a3, a4, a5)
+            if os.path.exists(args.file_path):
+                df = pkl.load(open(args.file_path, 'rb'))
+                print('Already we have {} data points' .format(df.shape[0]))
+            else:
+                df = pd.DataFrame([])
+                print('first time with the df')
 
-        curr_num = np.random.randint(1, 10000000)
-        print('curr_num: ', curr_num)
+            curr_ind = df.shape[0]
+            df.loc[curr_ind, 'a1'] = a1
+            df.loc[curr_ind, 'a2'] = a2
+            df.loc[curr_ind, 'a3'] = a3
+            df.loc[curr_ind, 'a4'] = a4
+            df.loc[curr_ind, 'a5'] = a5
+            df.loc[curr_ind, 'result1'] = curr_result1
+            df.loc[curr_ind, 'result2'] = curr_result2
+            df.loc[curr_ind, 'result_tot'] = curr_result1 + curr_result2
+            df.loc[curr_ind, 'curr_num'] = curr_num
+            df.loc[curr_ind, 'data_example'] = 'both'
 
-        curr_result1 = get_curr_val(a1, a2, a3, a4, a5, curr_num, 'BPI Challenge 2017 - instance.pickle')
-        curr_result2 = get_curr_val(a1, a2, a3, a4, a5, curr_num,'BPI Challenge 2017 - instance 2.pickle')
+            pkl.dump(df, open(args.file_path, 'wb'))
 
-
-        if os.path.exists(args.file_path):
-            df = pkl.load(open(args.file_path, 'rb'))
-            print('Already we have {} data points' .format(df.shape[0]))
-        else:
-            df = pd.DataFrame([])
-            print('first time with the df')
-
-        curr_ind = df.shape[0]
-        df.loc[curr_ind, 'a1'] = a1
-        df.loc[curr_ind, 'a2'] = a2
-        df.loc[curr_ind, 'a3'] = a3
-        df.loc[curr_ind, 'a4'] = a4
-        df.loc[curr_ind, 'a5'] = a5
-        df.loc[curr_ind, 'result1'] = curr_result1
-        df.loc[curr_ind, 'result2'] = curr_result2
-        df.loc[curr_ind, 'result_tot'] = curr_result1 + curr_result2
-        df.loc[curr_ind, 'curr_num'] = curr_num
-        df.loc[curr_ind, 'data_example'] = 'both'
-
-        pkl.dump(df, open(args.file_path, 'wb'))
-
-        print(df)
+            print(df)
 
 
 
