@@ -1,6 +1,8 @@
 import os.path
 import pickle5 as pkl
-from simulator import Simulator
+# from simulator import Simulator
+from sim_backup import Simulator
+
 import pandas as pd
 import argparse
 import numpy as np
