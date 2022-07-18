@@ -468,6 +468,39 @@ def main(args):
     result = simulator.run()
     print(result)
 
+    a1 = my_planner.a1
+    a2 = my_planner.a2
+    a3 = my_planner.a3
+    a4 = my_planner.a4
+    a5 = my_planner.a5
+
+
+    #
+    # curr_result1 = get_curr_val(a1, a2, a3, a4, a5, curr_num, 'BPI Challenge 2017 - instance.pickle')
+    # curr_result2 = get_curr_val(a1, a2, a3, a4, a5, curr_num, 'BPI Challenge 2017 - instance 2.pickle')
+    #
+    if os.path.exists(args.file_path):
+        df = pkl.load(open(args.file_path, 'rb'))
+        print('Already we have {} data points'.format(df.shape[0]))
+    else:
+        df = pd.DataFrame([])
+        print('first time with the df')
+
+    curr_ind = df.shape[0]
+    df.loc[curr_ind, 'a1'] = a1
+    df.loc[curr_ind, 'a2'] = a2
+    df.loc[curr_ind, 'a3'] = a3
+    df.loc[curr_ind, 'a4'] = a4
+    df.loc[curr_ind, 'a5'] = a5
+    df.loc[curr_ind, 'result1'] = result[0]
+    # df.loc[curr_ind, 'result2'] = curr_result2
+    # df.loc[curr_ind, 'result_tot'] = curr_result1 + curr_result2
+    # df.loc[curr_ind, 'data_example'] = 'both'
+
+    pkl.dump(df, open(args.file_path, 'wb'))
+
+    print(df)
+
     if False:
         for ind in range(args.num_iter):
 
@@ -526,7 +559,7 @@ def main(args):
 
 def parse_arguments(argv):
     parser = argparse.ArgumentParser()
-    parser.add_argument('--file_path', type=str, help='which settings are used', default='Result_table_4.pkl')
+    parser.add_argument('--file_path', type=str, help='which settings are used', default='Result_table_6.pkl')
     parser.add_argument('--num_iter', type=int, help='how many iterations we run', default=5)
     args = parser.parse_args(argv)
 
